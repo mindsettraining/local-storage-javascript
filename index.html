@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local storage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        section {
+            background-image: url('./images/course-06.jpg');
+            min-height: 100vh;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            background-color: rgba(0, 0, 0, 0.339);
+            background-blend-mode: multiply;
+            background-attachment: fixed;
+            padding: 20px 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        form div {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+
+        }
+
+        form div input {
+            padding: 10px 15px;
+            border: 0;
+            outline: none;
+            border-radius: 20px;
+
+        }
+
+        button {
+            margin: 20px;
+            background-color: rgb(206, 106, 36);
+            width:34%;
+            border: 0;
+            padding: 10px 17px;
+            color:white;
+            border-radius: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        #products {
+            margin: auto;
+            width: 80%;
+            padding: 30px;
+            border-radius: 30px;
+            background-color: rgba(210, 105, 30, 0.391);
+            min-height: 80vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            align-content: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #products .product{
+            padding: 50px;
+            background-color: #1B7EE4;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100px;
+            justify-content: center;
+            gap: 10px;
+        }
+
+
+        #products .product p{
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <form onsubmit="return false;">
+            <div class="inputs">
+                <input id="name" type="text" placeholder="Product name...">
+                <input type="number"
+                id="count"
+                placeholder="Product count...">
+            </div>
+            <button id="submit">
+                Add
+            </button>
+        </form>
+        <div id="products"></div>
+
+
+
+    </section>
+    <script>
+
+        // setup the local storage item
+        if(!localStorage.getItem('products'))
+        {
+            localStorage.setItem('products', '[]')
+        }
+
+        // convert localstorage data to local array to easy using it
+        let products = JSON.parse(localStorage.getItem('products'))
+
+        let nameInput = document.getElementById('name')
+        let countInput = document.getElementById('count')
+        let submitBtn = document.getElementById('submit')
+
+        // add new product
+        submitBtn.addEventListener('click', function(){
+            products.push({
+                name: nameInput.value,
+                count: countInput.value
+            })
+
+            // update local storage data & update html elements
+            showProducts()           
+        })
+
+        function addProduct(index)
+        {
+            let product = document.createElement('div')
+                product.classList.add('product')
+                let para = document.createElement('p')
+                para.innerHTML = 'Name: ' + products[index].name + ', count: ' + products[index].count
+                let btn = document.createElement('button')
+                btn.innerHTML = 'x'
+                btn.onclick = function()
+                {
+                    products.splice(index, 1)
+                    showProducts()
+                }
+                product.appendChild(para)
+                product.appendChild(btn)
+                container.appendChild(product)
+        }
+
+        let container = document.getElementById('products')
+
+        function showProducts()
+        {
+            localStorage.setItem('products', JSON.stringify(products))
+            container.innerHTML = ''
+            for(index in products) {
+                addProduct(index)
+            }
+        }
+
+        // start viewing elements in reloading page
+        showProducts()
+
+    </script>
+</body>
+
+</html>
